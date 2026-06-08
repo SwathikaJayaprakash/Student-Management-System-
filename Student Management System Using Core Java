@@ -1,0 +1,247 @@
+import java.util.*;
+
+// Base class - Encapsulation
+class Person {
+    private String name;
+    private int age;
+    private String email;
+
+    public Person(String name, int age, String email) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+    }
+
+    // Getters and Setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    // Polymorphism - overridden in subclasses
+    public void displayInfo() {
+        System.out.println("Name  : " + name);
+        System.out.println("Age   : " + age);
+        System.out.println("Email : " + email);
+    }
+}
+
+// Inheritance - Student extends Person
+class Student extends Person {
+    private int studentId;
+    private String course;
+    private double marks;
+
+    public Student(int studentId, String name, int age, String email, String course, double marks) {
+        super(name, age, email);
+        this.studentId = studentId;
+        this.course = course;
+        this.marks = marks;
+    }
+
+    public int getStudentId() { return studentId; }
+    public String getCourse() { return course; }
+    public void setCourse(String course) { this.course = course; }
+    public double getMarks() { return marks; }
+    public void setMarks(double marks) { this.marks = marks; }
+
+    public String getGrade() {
+        if (marks >= 90) return "A+";
+        else if (marks >= 80) return "A";
+        else if (marks >= 70) return "B";
+        else if (marks >= 60) return "C";
+        else return "F";
+    }
+
+    // Polymorphism - overriding displayInfo()
+    @Override
+    public void displayInfo() {
+        System.out.println("-----------------------------");
+        System.out.println("Student ID : " + studentId);
+        super.displayInfo();
+        System.out.println("Course     : " + course);
+        System.out.println("Marks      : " + marks);
+        System.out.println("Grade      : " + getGrade());
+        System.out.println("-----------------------------");
+    }
+}
+
+// Inheritance - Teacher extends Person
+class Teacher extends Person {
+    private int teacherId;
+    private String subject;
+
+    public Teacher(int teacherId, String name, int age, String email, String subject) {
+        super(name, age, email);
+        this.teacherId = teacherId;
+        this.subject = subject;
+    }
+
+    public int getTeacherId() { return teacherId; }
+    public String getSubject() { return subject; }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("-----------------------------");
+        System.out.println("Teacher ID : " + teacherId);
+        super.displayInfo();
+        System.out.println("Subject    : " + subject);
+        System.out.println("-----------------------------");
+    }
+}
+
+// Management class
+class StudentManagement {
+    private List<Student> students = new ArrayList<>();
+    private List<Teacher> teachers = new ArrayList<>();
+    private int studentIdCounter = 1;
+    private int teacherIdCounter = 1;
+
+    // Add Student
+    public void addStudent(String name, int age, String email, String course, double marks) {
+        students.add(new Student(studentIdCounter++, name, age, email, course, marks));
+        System.out.println("✅ Student added successfully!");
+    }
+
+    // Add Teacher
+    public void addTeacher(String name, int age, String email, String subject) {
+        teachers.add(new Teacher(teacherIdCounter++, name, age, email, subject));
+        System.out.println("✅ Teacher added successfully!");
+    }
+
+    // Display all students
+    public void displayAllStudents() {
+        if (students.isEmpty()) {
+            System.out.println("No students found.");
+            return;
+        }
+        System.out.println("\n===== ALL STUDENTS =====");
+        for (Student s : students) s.displayInfo();
+    }
+
+    // Display all teachers
+    public void displayAllTeachers() {
+        if (teachers.isEmpty()) {
+            System.out.println("No teachers found.");
+            return;
+        }
+        System.out.println("\n===== ALL TEACHERS =====");
+        for (Teacher t : teachers) t.displayInfo();
+    }
+
+    // Search student by ID
+    public void searchStudent(int id) {
+        for (Student s : students) {
+            if (s.getStudentId() == id) {
+                System.out.println("\n===== STUDENT FOUND =====");
+                s.displayInfo();
+                return;
+            }
+        }
+        System.out.println("Student with ID " + id + " not found.");
+    }
+
+    // Delete student by ID
+    public void deleteStudent(int id) {
+        Iterator<Student> iter = students.iterator();
+        while (iter.hasNext()) {
+            if (iter.next().getStudentId() == id) {
+                iter.remove();
+                System.out.println("✅ Student deleted successfully!");
+                return;
+            }
+        }
+        System.out.println("Student with ID " + id + " not found.");
+    }
+
+    // Update student marks
+    public void updateMarks(int id, double newMarks) {
+        for (Student s : students) {
+            if (s.getStudentId() == id) {
+                s.setMarks(newMarks);
+                System.out.println("✅ Marks updated successfully!");
+                return;
+            }
+        }
+        System.out.println("Student not found.");
+    }
+}
+
+// Main class
+public class StudentManagementSystem {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        StudentManagement mgmt = new StudentManagement();
+
+        while (true) {
+            System.out.println("\n===== STUDENT MANAGEMENT SYSTEM =====");
+            System.out.println("1. Add Student");
+            System.out.println("2. Add Teacher");
+            System.out.println("3. View All Students");
+            System.out.println("4. View All Teachers");
+            System.out.println("5. Search Student by ID");
+            System.out.println("6. Update Student Marks");
+            System.out.println("7. Delete Student");
+            System.out.println("8. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Name: "); String sName = sc.nextLine();
+                    System.out.print("Age: "); int sAge = sc.nextInt(); sc.nextLine();
+                    System.out.print("Email: "); String sEmail = sc.nextLine();
+                    System.out.print("Course: "); String sCourse = sc.nextLine();
+                    System.out.print("Marks: "); double sMarks = sc.nextDouble(); sc.nextLine();
+                    mgmt.addStudent(sName, sAge, sEmail, sCourse, sMarks);
+                    break;
+
+                case 2:
+                    System.out.print("Name: "); String tName = sc.nextLine();
+                    System.out.print("Age: "); int tAge = sc.nextInt(); sc.nextLine();
+                    System.out.print("Email: "); String tEmail = sc.nextLine();
+                    System.out.print("Subject: "); String tSubject = sc.nextLine();
+                    mgmt.addTeacher(tName, tAge, tEmail, tSubject);
+                    break;
+
+                case 3:
+                    mgmt.displayAllStudents();
+                    break;
+
+                case 4:
+                    mgmt.displayAllTeachers();
+                    break;
+
+                case 5:
+                    System.out.print("Enter Student ID: "); int searchId = sc.nextInt();
+                    mgmt.searchStudent(searchId);
+                    break;
+
+                case 6:
+                    System.out.print("Enter Student ID: "); int updateId = sc.nextInt();
+                    System.out.print("Enter New Marks: "); double newMarks = sc.nextDouble();
+                    mgmt.updateMarks(updateId, newMarks);
+                    break;
+
+                case 7:
+                    System.out.print("Enter Student ID to delete: "); int delId = sc.nextInt();
+                    mgmt.deleteStudent(delId);
+                    break;
+
+                case 8:
+                    System.out.println("Goodbye! 👋");
+                    sc.close();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Invalid choice! Try again.");
+            }
+        }
+    }
+}
